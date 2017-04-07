@@ -1,0 +1,25 @@
+.opengraph-embed {
+	background:#FFFFFF;
+	border:1px solid #E5E5E5;
+	color:#82878C;
+	font-size:14px;
+	line-height:1.5;
+	padding:25px;
+	zoom:1;
+}
+
+	.opengraph-embed .thumbnail {
+		margin:0 0 20px 0;
+	}
+
+	.opengraph-embed .title {
+		font-size:22px;
+		font-weight:bold;
+		line-height:1.3;
+		margin:0 0 15px 0;
+	}
+
+		.opengraph-embed .title a {
+			color:#32373C;
+			text-decoration:none;
+		}
