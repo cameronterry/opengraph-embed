@@ -70,9 +70,15 @@ function ogembed_maybe_make_link( $output, $url ) {
 	 */
 	global $og_embed_data; $og_embed_data = $og_embed->get_data();
 
-	ob_start();
-	require( OG_EMBED_DIR . '/template/embed.php' );
-	$output = ob_get_clean();
+	/**
+	 * Make sure we actually have some data before attempting to build the
+	 * template for the embed.
+	 */
+	if ( false === empty( $og_embed_data ) ) {
+		ob_start();
+		require( OG_EMBED_DIR . '/template/embed.php' );
+		$output = ob_get_clean();
+	}
 
 	return $output;
 }

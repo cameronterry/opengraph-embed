@@ -75,10 +75,12 @@ class OGEmbed {
 		$response = wp_remote_get( $this->url, array() );
 
 		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			return $output;
+			return false;
 		}
 
 		$this->html = wp_remote_retrieve_body( $response );
+
+		return true;
 	}
 
 	/**
@@ -94,8 +96,12 @@ class OGEmbed {
 		 * parse.
 		 */
 		if ( empty( $this->data ) ) {
-			$this->curl();
-			$this->data = $this->parse_html();
+			if ( $this->curl() ) {
+				$this->data = $this->parse_html();
+			}
+			else {
+				$this->data = array();
+			}
 		}
 
 		return $this->data;
