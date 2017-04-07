@@ -46,19 +46,21 @@ function ogembed_maybe_make_link( $output, $url ) {
 	// $html = wp_remote_retrieve_body( $response );
 	global $oge_embed;
 	$oge_embed = oge_get_opengraph_data( file_get_contents( OG_EMBED_DIR . '/test.html' ) );
-var_dump($oge_embed);
 	ob_start();
 	require( OG_EMBED_DIR . '/template/embed.php' );
 	$html .= ob_get_clean();
 
 	$oge_embed = oge_get_opengraph_data( file_get_contents( OG_EMBED_DIR . '/test2.html' ) );
-var_dump($oge_embed);
 	ob_start();
 	require( OG_EMBED_DIR . '/template/embed.php' );
 	$html .= ob_get_clean();
 
 	$oge_embed = oge_get_opengraph_data( file_get_contents( OG_EMBED_DIR . '/test3.html' ) );
-var_dump($oge_embed);
+	ob_start();
+	require( OG_EMBED_DIR . '/template/embed.php' );
+	$html .= ob_get_clean();
+
+	$oge_embed = oge_get_opengraph_data( file_get_contents( OG_EMBED_DIR . '/test4.html' ) );
 	ob_start();
 	require( OG_EMBED_DIR . '/template/embed.php' );
 	$html .= ob_get_clean();
