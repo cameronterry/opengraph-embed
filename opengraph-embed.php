@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: OpenGraph Embed
- * Description: Making all URLs work like oEmbed, even if the URL does not have an oEmbed endpoint.
+ * Description: Making all URLs work like oEmbed through OpenGraph, even if the URL does not have an oEmbed endpoint.
  * Plugin URI: https://github.com/cameronterry/opengraph-embed/
  * Author: Automattic
  * Author URI: https://github.com/cameronterry/
@@ -59,15 +59,46 @@ function ogembed_maybe_make_link( $output, $url ) {
 		return $output;
 	}
 
-	$response = wp_remote_get( $url, array() );
+	/** Get the post data. */
+	$post = get_post();
 
-	if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
-		return $output;
+	/**
+	 * Retrieve the data from the post metadata if available. This is used as a
+	 * caching mechanism, as we can't rely on object cache for all WordPress
+	 * setups.
+	 */
+	$key_suffix = md5( $url . 'opengraph_embed' );
+	$cachekey = '_opengraph_embed_' . $key_suffix;
+	$cachekey_time = '_opengraph_embed_time_' . $key_suffix;
+
+	$cache = get_post_meta( $post->ID, $cachekey, true );
+	$cache_time = get_post_meta( $post->ID, $cachekey_time, true );
+
+	if ( ! $cache_time ) {
+		$cache_time = 0;
 	}
 
-	$html = wp_remote_retrieve_body( $response );
+	$ttl = apply_filters( 'ogembed_ttl', DAY_IN_SECONDS, $url );
+
+	$cached_recently = ( time() - $cache_time ) < $ttl;
+
 	global $oge_embed;
-	$oge_embed = oge_get_opengraph_data( $html );
+	if ( $cached_recently ) {
+		$oge_embed = $cache;
+	}
+	else {
+		$response = wp_remote_get( $url, array() );
+
+		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+			return $output;
+		}
+
+		$html = wp_remote_retrieve_body( $response );
+		$oge_embed = oge_get_opengraph_data( $html );
+
+		update_post_meta( $post->ID, $cachekey, $oge_embed );
+		update_post_meta( $post->ID, $cachekey_time, time() );
+	}
 
 	ob_start();
 	require( OG_EMBED_DIR . '/template/embed.php' );
