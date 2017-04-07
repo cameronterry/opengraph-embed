@@ -147,6 +147,9 @@ class OGEmbed {
 			}
 		}
 
+		$url_components = parse_url( $this->url );
+		$opengraph['domain'] = $url_components['scheme'] . '://' . $url_components['host'];
+		
 		/**
 		 * Update the cache on the Post Metadata to include this newly parsed
 		 * URL / HTML.
