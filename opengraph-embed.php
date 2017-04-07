@@ -18,6 +18,28 @@ require_once( OG_EMBED_DIR . '/inc/parser.php' );
 require_once( OG_EMBED_DIR . '/inc/template-tags.php' );
 
 /**
+ * ==================
+ * ADMIN PREVIEW NOTE
+ * ==================
+ *
+ * In the admin area, for each URL put on a line by itself will called an AJAX
+ * action called "parse-embed". This in turn sets the property
+ * "return_false_on_fail" on the global WP_Embed object instance as per the Trac
+ * reference below.
+ *
+ * https://core.trac.wordpress.org/browser/tags/4.7/src/wp-admin/includes/ajax-actions.php#L2961
+ *
+ * This sadly prevents the call to WP_Embed::maybe_make_link() ever reaching the
+ * "embed_maybe_make_link" filter.
+ *
+ * https://developer.wordpress.org/reference/classes/wp_embed/maybe_make_link/
+ *
+ * So until a action / filter hook between the two code references above can be
+ * found, or a change to WordPress core. We'll have to rely on blind faith that
+ * the URL will actually make it to a fancy embed. :-/
+ */
+
+/**
  * The filter "embed_maybe_make_link" is only called if oEmbed failed to create
  * an embed from any other mechanism within WordPress and it's plugins. To make
  * sure no one else has thought to use this filter, the prioirty has been put to
