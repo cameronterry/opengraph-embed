@@ -32,7 +32,7 @@ class OGEmbed {
 	private function cache_init( $post_id, $url ) {
 		$cache = get_post_meta( $post_id, $this->cachekey, true );
 		$cache_time = get_post_meta( $post_id, $this->cachekey_time, true );
-		
+
 		if ( ! $cache_time ) {
 			$cache_time = 0;
 		}
@@ -54,6 +54,10 @@ class OGEmbed {
 		}
 	}
 
+	/**
+	 * Put together the cache keys, which is an MD5 representation of the URL to
+	 * be embedded.
+	 */
 	private function cache_keys( $url ) {
 		$key_suffix = md5( $url . 'opengraph_embed' );
 
@@ -77,6 +81,13 @@ class OGEmbed {
 		$this->html = wp_remote_retrieve_body( $response );
 	}
 
+	/**
+	 * Returns the OpenGraph data, either from cache in the post metdata or by
+	 * calling the URL and parsing the HTML response. This is the enabling part
+	 * of the class which will actually make things happen.
+	 *
+	 * @return array Dictionary containing the keys and values from the URLs OpenGraph meta tags.
+	 */
 	public function get_data() {
 		/**
 		 * If the URL has not been cached, then we will do the cURL and data
@@ -90,6 +101,9 @@ class OGEmbed {
 		return $this->data;
 	}
 
+	/**
+	 * Takes the HTML and retrieves the OpenGraph data from it.
+	 */
 	private function parse_html() {
 		/**
 		 * Effectively silence the errors so that the code does not bomb out at this
