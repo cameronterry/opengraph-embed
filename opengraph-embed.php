@@ -59,35 +59,21 @@ function ogembed_maybe_make_link( $output, $url ) {
 		return $output;
 	}
 
-	// $response = wp_remote_get( $url, array() );
-	//
-	// if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
-	// 	return $output;
-	// }
-	//
-	// $html = wp_remote_retrieve_body( $response );
+	$response = wp_remote_get( $url, array() );
+
+	if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
+		return $output;
+	}
+
+	$html = wp_remote_retrieve_body( $response );
 	global $oge_embed;
-	$oge_embed = oge_get_opengraph_data( file_get_contents( OG_EMBED_DIR . '/test.html' ) );
+	$oge_embed = oge_get_opengraph_data( $html );
+
 	ob_start();
 	require( OG_EMBED_DIR . '/template/embed.php' );
-	$html .= ob_get_clean();
+	$output = ob_get_clean();
 
-	$oge_embed = oge_get_opengraph_data( file_get_contents( OG_EMBED_DIR . '/test2.html' ) );
-	ob_start();
-	require( OG_EMBED_DIR . '/template/embed.php' );
-	$html .= ob_get_clean();
-
-	$oge_embed = oge_get_opengraph_data( file_get_contents( OG_EMBED_DIR . '/test3.html' ) );
-	ob_start();
-	require( OG_EMBED_DIR . '/template/embed.php' );
-	$html .= ob_get_clean();
-
-	$oge_embed = oge_get_opengraph_data( file_get_contents( OG_EMBED_DIR . '/test4.html' ) );
-	ob_start();
-	require( OG_EMBED_DIR . '/template/embed.php' );
-	$html .= ob_get_clean();
-
-	return $html;
+	return $output;
 }
 add_filter( 'embed_maybe_make_link', 'ogembed_maybe_make_link', 99, 2 );
 
