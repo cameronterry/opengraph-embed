@@ -76,7 +76,14 @@ function ogembed_maybe_make_link( $output, $url ) {
 	 */
 	if ( false === empty( $og_embed_data ) ) {
 		ob_start();
-		require( OG_EMBED_DIR . '/template/embed.php' );
+
+		if ( locate_template( 'opengraph-embed.php' ) ) {
+			get_template_part( 'opengraph', 'embed' );
+		}
+		else {
+			require( OG_EMBED_DIR . '/template/embed.php' );
+		}
+
 		$output = ob_get_clean();
 	}
 
