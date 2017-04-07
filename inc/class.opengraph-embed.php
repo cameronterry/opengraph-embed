@@ -72,7 +72,9 @@ class OGEmbed {
 	 * @param string $url The URL to call.
 	 */
 	public function curl() {
-		$response = wp_remote_get( $this->url, array() );
+		$response = wp_remote_get( $this->url, array(
+			'user-agent' => sprintf( 'OpenGraph Embed for WordPress/%1$s; %2$s (this website is sharing a direct link to your website, yay)', OG_EMBED_VERSION, home_url() )
+		) );
 
 		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
 			return false;
