@@ -14,7 +14,7 @@
 define( 'OG_EMBED_VERSION', '0.0.1' );
 define( 'OG_EMBED_DIR', dirname( __FILE__ ) );
 
-require_once( OG_EMBED_DIR . '/inc/parser.php' );
+require_once( OG_EMBED_DIR . '/inc/class.opengraph-embed.php' );
 require_once( OG_EMBED_DIR . '/inc/template-tags.php' );
 
 /**
@@ -59,46 +59,16 @@ function ogembed_maybe_make_link( $output, $url ) {
 		return $output;
 	}
 
-	/** Get the post data. */
+	/**
+	 * Get the OpenGraph data from the OGEmbed object.
+	 */
 	$post = get_post();
+	$og_embed = new OGEmbed( $post->ID, $url );
 
 	/**
-	 * Retrieve the data from the post metadata if available. This is used as a
-	 * caching mechanism, as we can't rely on object cache for all WordPress
-	 * setups.
+	 * Prepare for the OpenGraph template tags.
 	 */
-	$key_suffix = md5( $url . 'opengraph_embed' );
-	$cachekey = '_opengraph_embed_' . $key_suffix;
-	$cachekey_time = '_opengraph_embed_time_' . $key_suffix;
-
-	$cache = get_post_meta( $post->ID, $cachekey, true );
-	$cache_time = get_post_meta( $post->ID, $cachekey_time, true );
-
-	if ( ! $cache_time ) {
-		$cache_time = 0;
-	}
-
-	$ttl = apply_filters( 'ogembed_ttl', DAY_IN_SECONDS, $url );
-
-	$cached_recently = ( time() - $cache_time ) < $ttl;
-
-	global $oge_embed;
-	if ( $cached_recently ) {
-		$oge_embed = $cache;
-	}
-	else {
-		$response = wp_remote_get( $url, array() );
-
-		if ( 200 !== wp_remote_retrieve_response_code( $response ) ) {
-			return $output;
-		}
-
-		$html = wp_remote_retrieve_body( $response );
-		$oge_embed = oge_get_opengraph_data( $html );
-
-		update_post_meta( $post->ID, $cachekey, $oge_embed );
-		update_post_meta( $post->ID, $cachekey_time, time() );
-	}
+	global $og_embed_data; $og_embed_data = $og_embed->get_data();
 
 	ob_start();
 	require( OG_EMBED_DIR . '/template/embed.php' );
