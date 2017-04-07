@@ -5,6 +5,6 @@
 	<p class="title"><a href="<?php opengraph_the_permalink(); ?>"><?php opengraph_the_title(); ?></a></p>
 	<p><?php opengraph_the_content(); ?></p>
 	<div class="site">
-		<?php opengraph_the_site_name(); ?>
+		<?php opengraph_the_site(); ?>
 	</div>
 </aside>
