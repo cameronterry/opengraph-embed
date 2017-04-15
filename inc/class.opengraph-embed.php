@@ -149,7 +149,23 @@ class OGEmbed {
 
 		$url_components = parse_url( $this->url );
 		$opengraph['domain'] = $url_components['scheme'] . '://' . $url_components['host'];
-		
+
+		/**
+		 * If the og:title is omitted (like Wikipedia), then set the Title key
+		 * to be the title tag.
+		 */
+		if ( false === array_key_exists( 'title', $opengraph ) || empty( $opengraph['title'] ) ) {
+			$tags = $doc->getElementsByTagName( 'title' );
+
+			if ( 0 < $tags->length ) {
+				$opengraph['title'] = $tags->item( 0 )->textContent;
+			}
+		}
+
+		if ( false === array_key_exists( 'url', $opengraph ) || empty( $opengraph['url'] ) ) {
+			$opengraph['url'] = $this->url;
+		}
+
 		/**
 		 * Update the cache on the Post Metadata to include this newly parsed
 		 * URL / HTML.
