@@ -131,7 +131,7 @@ class OGEmbed {
 		 */
 		$tags = $doc->getElementsByTagName( 'meta' );
 
-		if ( false === $tags || $tags->length === 0) {
+		if ( false === $tags || 0 === $tags->length ) {
 			return false;
 		}
 
