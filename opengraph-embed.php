@@ -5,13 +5,13 @@
  * Plugin URI: https://github.com/cameronterry/opengraph-embed/
  * Author: Automattic
  * Author URI: https://github.com/cameronterry/
- * Version: 0.0.1
+ * Version: 1.0.0
  * Text Domain: opengraph-embed
  * Domain Path: /languages/
  * License: GPLv2 or later
  */
 
-define( 'OG_EMBED_VERSION', '0.0.1' );
+define( 'OG_EMBED_VERSION', '1.0.0' );
 define( 'OG_EMBED_DIR', dirname( __FILE__ ) );
 
 require_once( OG_EMBED_DIR . '/inc/class.opengraph-embed.php' );
